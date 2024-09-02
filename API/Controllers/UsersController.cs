@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly DataContext _context;
@@ -28,9 +28,9 @@ public class UsersController : ControllerBase
     public ActionResult<IEnumerable<AppUser>>GetUsersById(int id)
     {
         var user = _context.Users.Find(id);
-
+    
         if (user == null) return NotFound();
-
-        return user;
+    
+        return Ok(new List<AppUser> { user }); //ver si jala
     }
 }
