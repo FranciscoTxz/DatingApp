@@ -2,6 +2,7 @@ using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -17,20 +18,38 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<AppUser>>GetUsers()
+    public async Task<ActionResult<IEnumerable<AppUser>>>GetUsers()
     {
-        var users = _context.Users.ToList();
+        var users = await _context.Users.ToListAsync();
 
         return users;
     }
 
     [HttpGet("{id}")]
-    public ActionResult<IEnumerable<AppUser>>GetUsersById(int id)
+    public async Task<ActionResult<AppUser>>GetUsersById(int id)
     {
-        var user = _context.Users.Find(id);
+        var user = await _context.Users.FindAsync(id);
     
         if (user == null) return NotFound();
     
-        return Ok(new List<AppUser> { user }); //ver si jala
+        return user; //ver si jala
     }
+
+
+    [HttpGet("name/{name}")]
+    public ActionResult<string> Ready(string name)
+    {
+        return $"Hello, {name}";
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<AppUser>> AddUser(AppUser user)
+    {
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetUsersById), new { id = user.Id }, user);
+    }
+
+
 }
