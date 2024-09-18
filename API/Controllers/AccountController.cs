@@ -4,20 +4,26 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 public class AccountController(DataContext context) : BaseApiController
 {
     [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> RegisterAsync(RegisterDto register)
-    {
+    public async Task<ActionResult<AppUser>> RegisterAsync(RegisterRequest request)
+    {   
+        if (await UserExistsAsync(request.username))
+        {
+            return BadRequest("Username already exists");
+        }
+
         using var hmac = new HMACSHA512();
 
         var user = new AppUser
         {
-            UserName = register.username,
-            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(register.password)),
+            UserName = request.username,
+            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.password)),
             PasswordSalt = hmac.Key
         };
 
@@ -26,4 +32,7 @@ public class AccountController(DataContext context) : BaseApiController
 
         return user;
     }
+
+    private async Task<bool> UserExistsAsync(string username) =>
+        await context.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower());
 }

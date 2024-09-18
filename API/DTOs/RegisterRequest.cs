@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs;
 
-public class RegisterDto
+public class RegisterRequest
 {
     [Required]
     public required string username { get; set; }
