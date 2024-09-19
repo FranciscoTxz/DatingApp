@@ -1,4 +1,6 @@
  using API.Data;
+using API.Interfaces;
+using API.Services;
 using Microsoft.EntityFrameworkCore; //dotnet watch --no-hot-reload 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,11 +13,13 @@ builder.Services.AddDbContext<DataContext>(opt =>
 });
 
 builder.Services.AddCors();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
 //Configure the hhtp request pipeline
-app.UseCors(policy => policy.AllowAnyHeader()
+app.UseCors(policy => policy
+    .AllowAnyHeader()
     .AllowAnyMethod()
     .WithOrigins(
         "http://localhost:4200", 
