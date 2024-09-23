@@ -2,9 +2,11 @@ using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
+[Authorize]
 public class UsersController : BaseApiController
 {
     private readonly DataContext _context;
@@ -14,15 +16,17 @@ public class UsersController : BaseApiController
         _context = context;
     }
 
+    [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AppUser>>>GetUsers()
+    public async Task<ActionResult<IEnumerable<AppUser>>>GetUsersAsync()
     {
         var users = await _context.Users.ToListAsync();
 
         return users;
     }
 
-    [HttpGet("{id}")]
+    [Authorize]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<AppUser>>GetUsersById(int id)
     {
         var user = await _context.Users.FindAsync(id);
@@ -32,8 +36,7 @@ public class UsersController : BaseApiController
         return user;
     }
 
-
-    [HttpGet("name/{name}")]
+    [HttpGet("{name}")]
     public ActionResult<string> Ready(string name)
     {
         return $"Hello, {name}";
