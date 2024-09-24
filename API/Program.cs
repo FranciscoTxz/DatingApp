@@ -1,11 +1,5 @@
-using System.Text;
-using API.Data;
 using API.Extensions;
-using API.Interfaces;
-using API.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens; //dotnet watch --no-hot-reload 
+//dotnet watch --no-hot-reload 
 
 var builder = WebApplication.CreateBuilder(args);
 
