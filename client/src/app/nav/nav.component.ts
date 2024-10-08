@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-nav',
@@ -15,15 +16,17 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 export class NavComponent {
   accountService = inject(AccountService);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
   model: any = {};
 
   login(): void {
     this.accountService.login(this.model).subscribe({
       next: _ => {
         this.router.navigateByUrl('/members');
+        this.toastr.success("Welcome back " + this.model.username);
       },
       error: (error) => {
-        console.log("Se ha producido un error: " + error);
+        this.toastr.error(error.error);
       }
     });
   }
