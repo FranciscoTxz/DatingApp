@@ -4,7 +4,7 @@ using API.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-public class BuggyController(DataContext context): BaseApiController
+public class BuggyController(DataContext context) : BaseApiController
 {
     [Authorize]
     [HttpGet("auth")]
@@ -22,8 +22,8 @@ public class BuggyController(DataContext context): BaseApiController
     [HttpGet("server-error")]
     public ActionResult<string> GetServerError()
     {
-        var result = context.Users.Find(-1)??
-            throw new ArgumentException("Server error ");
+        var result = context.Users.Find(-1) ??
+            throw new ArgumentException("Server error ocurred");
         return "random text";
     }
 
@@ -32,7 +32,4 @@ public class BuggyController(DataContext context): BaseApiController
     {
         return BadRequest();
     }
-
-
-
 }
