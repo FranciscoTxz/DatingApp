@@ -9,7 +9,12 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<AppUser, MemberResponse>();
+        CreateMap<AppUser, MemberResponse>()
+            .ForMember(
+                dest => dest.PhotoUrl, 
+                opt => opt.MapFrom(
+                    src => src.Photos.FirstOrDefault(p => p.IsMain)!.Url
+                    ));
         CreateMap<Photo, PhotoResponse>();
     }
 }
